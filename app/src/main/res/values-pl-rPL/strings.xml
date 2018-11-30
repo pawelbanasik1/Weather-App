@@ -12,6 +12,8 @@
     <string name="fragment2">Pogoda długoterminowa</string>
     <string name="settingstitle">Wybierz jednostki temperatury</string>
     <string name="option1">Celsiusz</string>
+    <string name="tomorrow">Jutro</string>
+    <string name="day_after">Pojutrze</string>
 
 
 </resources>

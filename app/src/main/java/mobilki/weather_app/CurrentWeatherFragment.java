@@ -36,15 +36,12 @@ import org.json.JSONObject;
  */
 public class CurrentWeatherFragment extends Fragment {
 
-    private FusedLocationProviderClient mFusedLocationClient;
-    public static double latitude;
-    public static double longtitude;
+
     protected TextView city;
     protected TextView temp;
     protected TextView hum;
     protected TextView pres;
     protected TextView cloud;
-    protected double tempp;
 
 
 
@@ -54,34 +51,34 @@ public class CurrentWeatherFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
             final String data = (String) extras.get("output");
-            city = getView().findViewById(R.id.city);
-            temp = getView().findViewById(R.id.temp);
-            hum = getView().findViewById(R.id.humidity);
-            pres = getView().findViewById(R.id.pressure);
-            cloud = getView().findViewById(R.id.clouds);
+            final String typeOfForecast = (String) extras.get("typeOfForecast");
+            if (typeOfForecast.equals("weather")) {
+                city = getView().findViewById(R.id.city);
+                temp = getView().findViewById(R.id.temp);
+                hum = getView().findViewById(R.id.humidity);
+                pres = getView().findViewById(R.id.pressure);
+                cloud = getView().findViewById(R.id.clouds);
 
-            try {
-                JSONObject obj = new JSONObject(data);
-                String cityName = obj.getString("name");
-                String temperature = obj.getJSONObject("main").getString("temp");
-                String humidity = obj.getJSONObject("main").getString("humidity");
-                String pressure = obj.getJSONObject("main").getString("pressure");
-                String clouds = obj.getJSONObject("clouds").getString("all");
+                try {
+                    JSONObject obj = new JSONObject(data);
+                    String cityName = obj.getString("name");
+                    String temperature = obj.getJSONObject("main").getString("temp");
+                    String humidity = obj.getJSONObject("main").getString("humidity");
+                    String pressure = obj.getJSONObject("main").getString("pressure");
+                    String clouds = obj.getJSONObject("clouds").getString("all");
 
+                    //oryginalny output jest w kelvinach wiec zamieniam na celsjusze
+                    double tempdouble = Double.parseDouble(temperature);
+                    double tempcelsius = tempdouble - 273.15;
 
-                //oryginalny output jest w kelvinach wiec zamieniam na celsjusze
-                double tempdouble = Double.parseDouble(temperature);
-                double tempcelsius = tempdouble - 273.15;
-                tempp = tempcelsius;
-
-                city.setText(getResources().getString(R.string.city)+": " + cityName);
-                hum.setText(getResources().getString(R.string.humidity)+": " + humidity + "%");
-                pres.setText(getResources().getString(R.string.pressure)+": " + pressure + "hpa");
-                cloud.setText(getResources().getString(R.string.clouds)+": " + clouds + "%");
-                updateUnits(tempcelsius);
-            }
-                catch (JSONException e) {
-                e.printStackTrace();
+                    city.setText(getResources().getString(R.string.city) + ": " + cityName);
+                    hum.setText(getResources().getString(R.string.humidity) + ": " + humidity + "%");
+                    pres.setText(getResources().getString(R.string.pressure) + ": " + pressure + "hpa");
+                    cloud.setText(getResources().getString(R.string.clouds) + ": " + clouds + "%");
+                    updateUnits(tempcelsius);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
@@ -115,34 +112,19 @@ public class CurrentWeatherFragment extends Fragment {
     @Override
     public void onCreate (Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        if ( ContextCompat.checkSelfPermission( getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-
-            ActivityCompat.requestPermissions( getActivity(), new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION  },
-                    11);
-        }
-        mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            latitude = location.getLatitude();
-                            longtitude = location.getLongitude();
-                            Intent serviceIntent = new Intent(getActivity(),WeatherService.class);
-                            serviceIntent.putExtra("latitude", String.valueOf(latitude));
-                            serviceIntent.putExtra("longtitude", String.valueOf(longtitude));
-                            getActivity().startService(serviceIntent);
-                        }
-                    }
-                });
     }
     @Override
     public void onStart() {
         super.onStart();
-
-
+        SharedPreferences prefs = getActivity().getSharedPreferences("PREFS", getActivity().MODE_PRIVATE);
+        //TODO zastapic defValues tymi z bazy czy cos
+        String latitude = prefs.getString("latitude", "0");
+        String longtitude = prefs.getString("longtitude", "0");
+        Intent serviceIntent = new Intent(getActivity(),WeatherService.class);
+        serviceIntent.putExtra("latitude", latitude);
+        serviceIntent.putExtra("longtitude", longtitude);
+        serviceIntent.putExtra("typeOfForecast", "weather");
+        getActivity().startService(serviceIntent);
     }
     @Override
     public void onResume(){

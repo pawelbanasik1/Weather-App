@@ -3,13 +3,16 @@ package mobilki.weather_app;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -31,6 +34,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private FusedLocationProviderClient mFusedLocationClient;
+    public static double latitude;
+    public static double longtitude;
+    public Context context = this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,15 +55,39 @@ public class MainActivity extends AppCompatActivity
                 R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-    }
-    @Override
-    protected void onStart(){
-        super.onStart();
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+
+            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION  },
+                    11);
+        }
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            latitude = location.getLatitude();
+                            longtitude = location.getLongitude();
+                            SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+                            editor.putString("latitude", String.valueOf(latitude));
+                            editor.putString("longtitude", String.valueOf(longtitude));
+                            editor.apply();
+                        }
+                    }
+                });
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         CurrentWeatherFragment fragment = new CurrentWeatherFragment();
         fragmentTransaction.replace(R.id.currentweatherlayout, fragment, "fragment1");
         fragmentTransaction.commit();
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
+
     }
 
     @Override
@@ -111,7 +143,6 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_today) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
             CurrentWeatherFragment fragment = new CurrentWeatherFragment();
             fragmentTransaction.replace(R.id.currentweatherlayout, fragment,"fragment1");
             fragmentTransaction.commit();
@@ -119,7 +150,6 @@ public class MainActivity extends AppCompatActivity
             else if (id == R.id.nav_longterm) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
             LongtermWeatherFragment fragment = new LongtermWeatherFragment();
             fragmentTransaction.replace(R.id.currentweatherlayout, fragment, "fragment2");
             fragmentTransaction.commit();

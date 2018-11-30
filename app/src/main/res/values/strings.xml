@@ -16,5 +16,7 @@
     <string name="option1">Celsius</string>
     <string name="option2">Kelvin</string>
     <string name="option3">Fahrenheit</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="day_after">Day after tomorrow</string>
 
 </resources>

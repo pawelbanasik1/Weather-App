@@ -26,6 +26,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -131,7 +133,33 @@ public class MainActivity extends AppCompatActivity
             });
             builder.show();
         }
-        return super.onOptionsItemSelected(item);
+        if (id == R.id.action_localization) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getResources().getString(R.string.action_localization));
+            final EditText input = new EditText(MainActivity.this);
+            SharedPreferences prefs = context.getSharedPreferences("PREFS", context.MODE_PRIVATE);
+            final String localization = prefs.getString("localization", "");
+            input.setText(localization);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT);
+            input.setLayoutParams(lp);
+            builder.setView(input);
+            builder.setPositiveButton("OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            String localization = input.getText().toString();
+                            SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+                            editor.putString("localization", localization);
+                            editor.apply();
+                            finish();
+                            startActivity(getIntent());
+                            }
+                    });
+            builder.show();
+        }
+
+            return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

@@ -2,8 +2,8 @@ package mobilki.weather_app;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import java.io.IOException;
@@ -34,15 +34,26 @@ public class WeatherService extends Service {
         final String latitude = (String) extras.get("latitude");
         final String longtitude = (String) extras.get("longtitude");
         final String typeOfForecast = (String) extras.get("typeOfForecast");
+        SharedPreferences prefs = context.getSharedPreferences("PREFS", context.MODE_PRIVATE);
+        final String localization = prefs.getString("localization", null);
+
 
 
         Thread thread = new Thread(new Runnable() {
             public void run() {
                 String API_KEY = "3550b77377dff0538aab7ef52d1449c3";
-                String url = "http://api.openweathermap.org/data/2.5/"+typeOfForecast+"?" +
-                        "lat="+ latitude+
-                        "&lon="+ longtitude+
-                        "&APPID="+ API_KEY;
+                String url;
+                if (!localization.equals("")){
+                     url = "http://api.openweathermap.org/data/2.5/"+typeOfForecast+"?" +
+                            "q="+ localization+
+                            "&APPID="+ API_KEY;
+                }
+                else {
+                     url = "http://api.openweathermap.org/data/2.5/" + typeOfForecast + "?" +
+                            "lat=" + latitude +
+                            "&lon=" + longtitude +
+                            "&APPID=" + API_KEY;
+                }
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
                         .url(url)

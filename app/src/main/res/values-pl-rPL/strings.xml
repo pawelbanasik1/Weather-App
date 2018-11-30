@@ -2,7 +2,8 @@
 <resources>
     <string name="app_name">Aplikacja Pogodowa</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Ustawienia</string>
+    <string name="action_settings">Zmień jednostki</string>
+    <string name="action_localization">Zmień lokalizację</string>
     <string name="city">Lokalizacja</string>
     <string name="temperature">Temperatura</string>
     <string name="pressure">Ciśnienie</string>

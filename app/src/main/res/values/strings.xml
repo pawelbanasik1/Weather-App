@@ -1,8 +1,20 @@
 <resources>
-    <string name="app_name">Weather-App</string>
+    <string name="app_name">Weather App</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="city">Localization</string>
+    <string name="temperature">Temperature</string>
+    <string name="pressure">Pressure</string>
+    <string name="humidity">Humidity</string>
+    <string name="clouds">Clouds</string>
+    <string name="fragment1">Weather today</string>
+    <string name="fragment2">Long term weather</string>
+    <string name="settingstitle">Choose temperature units</string>
+    <string name="option1">Celsius</string>
+    <string name="option2">Kelvin</string>
+    <string name="option3">Fahrenheit</string>
+
 </resources>

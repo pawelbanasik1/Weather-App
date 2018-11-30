@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aplikacja Pogodowa</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Ustawienia</string>
+    <string name="city">Lokalizacja</string>
+    <string name="temperature">Temperatura</string>
+    <string name="pressure">Ciśnienie</string>
+    <string name="humidity">Wilgotność</string>
+    <string name="clouds">Zachmurzenie</string>
+    <string name="fragment1">Pogoda na dziś</string>
+    <string name="fragment2">Pogoda długoterminowa</string>
+    <string name="settingstitle">Wybierz jednostki temperatury</string>
+    <string name="option1">Celsiusz</string>
+
+
+</resources>

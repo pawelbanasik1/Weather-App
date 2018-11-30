@@ -6,12 +6,10 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_today"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Pogoda na dziś" />
+            android:title="@string/fragment1" />
         <item
             android:id="@+id/nav_longterm"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Pogoda długoterminowa" />
+            android:title="@string/fragment2" />
     </group>
 
 </menu>

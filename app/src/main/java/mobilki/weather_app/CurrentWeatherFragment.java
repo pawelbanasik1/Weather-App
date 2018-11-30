@@ -5,12 +5,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,6 +42,11 @@ public class CurrentWeatherFragment extends Fragment {
     protected TextView city;
     protected TextView temp;
     protected TextView hum;
+    protected TextView pres;
+    protected TextView cloud;
+    protected double tempp;
+
+
 
     protected BroadcastReceiver bReceiver = new BroadcastReceiver(){
 
@@ -46,27 +57,51 @@ public class CurrentWeatherFragment extends Fragment {
             city = getView().findViewById(R.id.city);
             temp = getView().findViewById(R.id.temp);
             hum = getView().findViewById(R.id.humidity);
+            pres = getView().findViewById(R.id.pressure);
+            cloud = getView().findViewById(R.id.clouds);
 
             try {
                 JSONObject obj = new JSONObject(data);
                 String cityName = obj.getString("name");
                 String temperature = obj.getJSONObject("main").getString("temp");
                 String humidity = obj.getJSONObject("main").getString("humidity");
+                String pressure = obj.getJSONObject("main").getString("pressure");
+                String clouds = obj.getJSONObject("clouds").getString("all");
+
 
                 //oryginalny output jest w kelvinach wiec zamieniam na celsjusze
                 double tempdouble = Double.parseDouble(temperature);
                 double tempcelsius = tempdouble - 273.15;
+                tempp = tempcelsius;
 
-                city.setText("Lokalizacja: " + cityName);
-                temp.setText("Temperatura: " + String.valueOf(tempcelsius) + " \u2103");
-                hum.setText("Wilgotność: " + humidity + "%");
-
+                city.setText(getResources().getString(R.string.city)+": " + cityName);
+                hum.setText(getResources().getString(R.string.humidity)+": " + humidity + "%");
+                pres.setText(getResources().getString(R.string.pressure)+": " + pressure + "hpa");
+                cloud.setText(getResources().getString(R.string.clouds)+": " + clouds + "%");
+                updateUnits(tempcelsius);
             }
                 catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     };
+    public void updateUnits(double tempInCelsius)
+    {
+        temp = getView().findViewById(R.id.temp);
+        SharedPreferences prefs = getActivity().getSharedPreferences("PREFS", getActivity().MODE_PRIVATE);
+        int option = prefs.getInt("option", 0);
+        if (option == 0){
+            temp.setText(getResources().getString(R.string.temperature)+": " + String.valueOf(tempInCelsius) + " \u2103");
+        }
+        else if (option == 1){
+            double tempInKelvin = tempInCelsius + 273.15;
+            temp.setText(getResources().getString(R.string.temperature)+": " + String.valueOf(tempInKelvin) + " K");
+        }
+        else if (option == 2){
+            double tempInFahrenheit = 32 + (tempInCelsius * 9 / 5);
+            temp.setText(getResources().getString(R.string.temperature)+": " + String.valueOf(tempInFahrenheit) + " F");
+        }
+    }
 
     public CurrentWeatherFragment() {
         // Required empty public constructor
@@ -82,7 +117,11 @@ public class CurrentWeatherFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        //TODO sprawdzanie permisions
+        if ( ContextCompat.checkSelfPermission( getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+
+            ActivityCompat.requestPermissions( getActivity(), new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION  },
+                    11);
+        }
         mFusedLocationClient.getLastLocation()
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
                     @Override
@@ -116,6 +155,4 @@ public class CurrentWeatherFragment extends Fragment {
         super.onPause();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(bReceiver);
     }
-
-
 }

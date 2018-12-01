@@ -1,4 +1,5 @@
 package mobilki.weather_app;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -6,7 +7,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
+
 import java.io.IOException;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -67,6 +70,12 @@ public class WeatherService extends Service {
                     LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                 }
                 catch(IOException e) {
+                    //"main":{"temp":285.514,"pressure":1013.75,"humidity":100,"temp_min":285.514,"temp_max":285.514,"sea_level":1023.22,"grnd_level":1013.75}
+                    String output = "{ \"name\":\"krakow\",\"main\":{\"temp\":\"22\", \"humidity\": \"jakas\", \"pressure\": \"dd\"}, \"clouds\":{\"all\": \"x\"}}";
+                    Intent intent = new Intent ("weatherdata");
+                    intent.putExtra("output", output);
+                    intent.putExtra("typeOfForecast", typeOfForecast);
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                     e.printStackTrace();
                 }
             }

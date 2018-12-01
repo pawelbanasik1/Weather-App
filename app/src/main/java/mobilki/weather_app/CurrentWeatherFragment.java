@@ -6,30 +6,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.location.Location;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import mobilki.weather_app.Database.CurrentWeather;
+import mobilki.weather_app.Database.DataManagerImp;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,7 +31,7 @@ public class CurrentWeatherFragment extends Fragment {
     protected TextView hum;
     protected TextView pres;
     protected TextView cloud;
-
+    private Context context;
 
 
     protected BroadcastReceiver bReceiver = new BroadcastReceiver(){
@@ -66,10 +55,18 @@ public class CurrentWeatherFragment extends Fragment {
                     String humidity = obj.getJSONObject("main").getString("humidity");
                     String pressure = obj.getJSONObject("main").getString("pressure");
                     String clouds = obj.getJSONObject("clouds").getString("all");
-
                     //oryginalny output jest w kelvinach wiec zamieniam na celsjusze
                     double tempdouble = Double.parseDouble(temperature);
                     double tempcelsius = tempdouble - 273.15;
+
+                    DataManagerImp db = new DataManagerImp(context);
+                    CurrentWeather weather = new CurrentWeather();
+                    weather.setCity(cityName);
+                    weather.setCloud(clouds);
+                    weather.setHum(humidity);
+                    weather.setPres(pressure);
+                    weather.setTemp(temperature);
+                    db.saveCurrent(weather);
 
                     city.setText(getResources().getString(R.string.city) + ": " + cityName);
                     hum.setText(getResources().getString(R.string.humidity) + ": " + humidity + "%");
@@ -82,6 +79,7 @@ public class CurrentWeatherFragment extends Fragment {
             }
         }
     };
+
     public void updateUnits(double tempInCelsius)
     {
         temp = getView().findViewById(R.id.temp);

@@ -62,14 +62,6 @@ public class CurrentWeatherFragment extends Fragment {
                     double tempdouble = Double.parseDouble(temperature);
                     double tempcelsius = tempdouble - 273.15;
 
-                    DataManagerImp db = new DataManagerImp(context);
-                    CurrentWeather weather = new CurrentWeather();
-                    weather.setCity(cityName);
-                    weather.setCloud(clouds);
-                    weather.setHum(humidity);
-                    weather.setPres(pressure);
-                    weather.setTemp(temperature);
-                    db.saveCurrent(weather);
 
                     city.setText(getResources().getString(R.string.city) + ": " + cityName);
                     hum.setText(getResources().getString(R.string.humidity) + ": " + humidity + "%");

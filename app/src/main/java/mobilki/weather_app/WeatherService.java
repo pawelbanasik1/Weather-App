@@ -7,9 +7,16 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
+import mobilki.weather_app.Database.CurrentWeather;
+import mobilki.weather_app.Database.DataManagerImp;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -17,6 +24,12 @@ import okhttp3.Response;
 public class WeatherService extends Service {
 
     public Context context = this;
+    private Long Id;
+    private static MainActivity parent;
+
+    public WeatherService(MainActivity parent) {
+        this.parent = parent;
+    }
 
     public WeatherService() {
     }
@@ -44,6 +57,10 @@ public class WeatherService extends Service {
 
         Thread thread = new Thread(new Runnable() {
             public void run() {
+
+
+                DataManagerImp db = new DataManagerImp(context);
+                CurrentWeather weather = new CurrentWeather();
                 String API_KEY = "3550b77377dff0538aab7ef52d1449c3";
                 String url;
                 if (!localization.equals("")){
@@ -68,14 +85,51 @@ public class WeatherService extends Service {
                     intent.putExtra("output", output);
                     intent.putExtra("typeOfForecast", typeOfForecast);
                     LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                    try {
+                        JSONObject obj = new JSONObject(output);
+                        String cityName = obj.getString("name");
+                        Log.d(cityName, "testow");
+                        String temperature = obj.getJSONObject("main").getString("temp");
+                        String humidity = obj.getJSONObject("main").getString("humidity");
+                        String pressure = obj.getJSONObject("main").getString("pressure");
+                        String clouds = obj.getJSONObject("clouds").getString("all");
+
+                        weather.setCity(cityName);
+                        weather.setCloud(clouds);
+                        weather.setHum(humidity);
+                        Log.v(humidity, "wartosci");
+                        weather.setPres(pressure);
+                        Log.v(pressure, "wartosci");
+                        weather.setTemp(temperature);
+                        db.saveCurrent(weather);
+                        Id = weather.getId();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                 }
                 catch(IOException e) {
-                    //"main":{"temp":285.514,"pressure":1013.75,"humidity":100,"temp_min":285.514,"temp_max":285.514,"sea_level":1023.22,"grnd_level":1013.75}
-                    String output = "{ \"name\":\"krakow\",\"main\":{\"temp\":\"22\", \"humidity\": \"jakas\", \"pressure\": \"dd\"}, \"clouds\":{\"all\": \"x\"}}";
-                    Intent intent = new Intent ("weatherdata");
-                    intent.putExtra("output", output);
-                    intent.putExtra("typeOfForecast", typeOfForecast);
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                    CurrentWeather weather1 = new CurrentWeather();
+                    if(Id == null){
+                        CharSequence text = "Brark połaczenia, brak danych zapisanych w pamieci!";
+                        int duration = Toast.LENGTH_LONG;
+
+                   //toast ????
+
+
+                    }else
+                        {
+                        weather1 = db.getCurrent(Id);
+
+                        //toast
+                        //"main":{"temp":285.514,"pressure":1013.75,"humidity":100,"temp_min":285.514,"temp_max":285.514,"sea_level":1023.22,"grnd_level":1013.75}
+                        String output = "{ \"name\":\"" + weather1.getCity() + "\",\"main\":{\"temp\":\"" + weather1.getTemp() + "\", \"humidity\": \"" + weather1.getHum() + "\", " +
+                                "\"pressure\": \"" + weather1.getPres() + "\"}, \"clouds\":{\"all\": \"" + weather1.getCloud() + "\"}}";
+                        Intent intent = new Intent("weatherdata");
+                        intent.putExtra("output", output);
+                        intent.putExtra("typeOfForecast", typeOfForecast);
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                    }
                     e.printStackTrace();
                 }
             }

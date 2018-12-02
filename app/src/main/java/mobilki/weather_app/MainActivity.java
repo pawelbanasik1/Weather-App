@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity
     public static double longtitude;
     public Context context = this;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

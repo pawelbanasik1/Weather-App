@@ -38,7 +38,6 @@ public class CurrentWeatherFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.v("kolejnosc", "tu pozniej");
             Bundle extras = intent.getExtras();
             final String data = (String) extras.get("output");
             final String typeOfForecast = (String) extras.get("typeOfForecast");
@@ -52,7 +51,6 @@ public class CurrentWeatherFragment extends Fragment {
                 try {
                     JSONObject obj = new JSONObject(data);
                     String cityName = obj.getString("name");
-                    Log.d(cityName, "testow");
                     String temperature = obj.getJSONObject("main").getString("temp");
                     String humidity = obj.getJSONObject("main").getString("humidity");
                     String pressure = obj.getJSONObject("main").getString("pressure");
@@ -109,7 +107,6 @@ public class CurrentWeatherFragment extends Fragment {
     public void onStart() {
         super.onStart();
         SharedPreferences prefs = getActivity().getSharedPreferences("PREFS", getActivity().MODE_PRIVATE);
-        Log.v("kolejnosc", "test");
         //TODO zastapic defValues tymi z bazy czy cos
         String latitude = prefs.getString("latitude", "0");
         String longtitude = prefs.getString("longtitude", "0");

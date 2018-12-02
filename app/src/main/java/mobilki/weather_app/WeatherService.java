@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -57,8 +59,6 @@ public class WeatherService extends Service {
 
         Thread thread = new Thread(new Runnable() {
             public void run() {
-
-
                 DataManagerImp db = new DataManagerImp(context);
                 CurrentWeather weather = new CurrentWeather();
                 String API_KEY = "3550b77377dff0538aab7ef52d1449c3";
@@ -97,9 +97,7 @@ public class WeatherService extends Service {
                         weather.setCity(cityName);
                         weather.setCloud(clouds);
                         weather.setHum(humidity);
-                        Log.v(humidity, "wartosci");
                         weather.setPres(pressure);
-                        Log.v(pressure, "wartosci");
                         weather.setTemp(temperature);
                         db.saveCurrent(weather);
                         Id = weather.getId();
@@ -111,17 +109,24 @@ public class WeatherService extends Service {
                 catch(IOException e) {
                     CurrentWeather weather1 = new CurrentWeather();
                     if(Id == null){
-                        CharSequence text = "Brark połaczenia, brak danych zapisanych w pamieci!";
-                        int duration = Toast.LENGTH_LONG;
-
-                   //toast ????
-
-
+                        Handler h = new Handler(context.getMainLooper());
+                        h.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context,R.string.toast_empty_db,Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }else
                         {
                         weather1 = db.getCurrent(Id);
 
-                        //toast
+                        Handler h = new Handler(context.getMainLooper());
+                        h.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context,R.string.toast_filled_db,Toast.LENGTH_LONG).show();
+                            }
+                           });
                         //"main":{"temp":285.514,"pressure":1013.75,"humidity":100,"temp_min":285.514,"temp_max":285.514,"sea_level":1023.22,"grnd_level":1013.75}
                         String output = "{ \"name\":\"" + weather1.getCity() + "\",\"main\":{\"temp\":\"" + weather1.getTemp() + "\", \"humidity\": \"" + weather1.getHum() + "\", " +
                                 "\"pressure\": \"" + weather1.getPres() + "\"}, \"clouds\":{\"all\": \"" + weather1.getCloud() + "\"}}";

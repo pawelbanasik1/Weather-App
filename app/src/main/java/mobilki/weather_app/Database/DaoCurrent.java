@@ -53,6 +53,10 @@ public class DaoCurrent implements Dao<CurrentWeather>{
                         new String[]{
                                 BaseColumns._ID,
                                 CurrentWeatherTab.CurrentColumns.CITY,
+                                CurrentWeatherTab.CurrentColumns.TEMP,
+                                CurrentWeatherTab.CurrentColumns.HUM,
+                                CurrentWeatherTab.CurrentColumns.PRES,
+                                CurrentWeatherTab.CurrentColumns.CLOUD,
                                 },
                         BaseColumns._ID + " = ?", new String[]{String.valueOf(id)},
                         null, null, null, "1");
@@ -73,7 +77,9 @@ public class DaoCurrent implements Dao<CurrentWeather>{
             Students.setId(c.getLong(0));
             Students.setCity(c.getString(1));
             Students.setTemp(c.getString(2));
-
+            Students.setHum(c.getString(3));
+            Students.setPres(c.getString(4));
+            Students.setCloud(c.getString(5));
         }
         return Students;
     }

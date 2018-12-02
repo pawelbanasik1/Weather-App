@@ -30,8 +30,8 @@ public class LongtermWeatherFragment extends Fragment {
 
     protected TextView day1;
     protected TextView day2;
-    protected TextView temp1;
-    protected TextView temp2;
+    protected TextView day3;
+    protected TextView day4;
 
 
     protected BroadcastReceiver bReceiver = new BroadcastReceiver(){
@@ -44,49 +44,61 @@ public class LongtermWeatherFragment extends Fragment {
             if (typeOfForecast.equals("forecast")) {
                 try {
                     JSONObject obj = new JSONObject(data);
-                    String temperature1 = obj.getJSONArray("list").getJSONObject(8).getJSONObject("main").getString("temp");
-                    String temperature2 = obj.getJSONArray("list").getJSONObject(16).getJSONObject("main").getString("temp");
+                    String temperature1 = obj.getJSONArray("list").getJSONObject(4).getJSONObject("main").getString("temp");
+                    String temperature2 = obj.getJSONArray("list").getJSONObject(8).getJSONObject("main").getString("temp");
+                    String temperature3 = obj.getJSONArray("list").getJSONObject(12).getJSONObject("main").getString("temp");
+                    String temperature4 = obj.getJSONArray("list").getJSONObject(16).getJSONObject("main").getString("temp");
+
+                    String date1 = obj.getJSONArray("list").getJSONObject(4).getString("dt_txt");
+                    String date2 = obj.getJSONArray("list").getJSONObject(8).getString("dt_txt");
+                    String date3 = obj.getJSONArray("list").getJSONObject(12).getString("dt_txt");
+                    String date4 = obj.getJSONArray("list").getJSONObject(16).getString("dt_txt");
 
                     //oryginalny output jest w kelvinach wiec zamieniam na celsjusze
                     double temp1double = Double.parseDouble(temperature1);
                     double temp2double = Double.parseDouble(temperature2);
+                    double temp3double = Double.parseDouble(temperature3);
+                    double temp4double = Double.parseDouble(temperature4);
+
                     double temp1celsius = temp1double - 273.15;
                     double temp2celsius = temp2double - 273.15;
+                    double temp3celsius = temp3double - 273.15;
+                    double temp4celsius = temp4double - 273.15;
 
-                    updateUnits(temp1celsius, temp2celsius);
+                    day1 = getView().findViewById(R.id.day1);
+                    day2 = getView().findViewById(R.id.day2);
+                    day3 = getView().findViewById(R.id.day3);
+                    day4 = getView().findViewById(R.id.day4);
+
+                    updateUnits(day1,temp1celsius, date1);
+                    updateUnits(day2,temp2celsius, date2);
+                    updateUnits(day3,temp3celsius, date3);
+                    updateUnits(day4,temp4celsius, date4);
+
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         }
     };
-    public void updateUnits(double temp1InCelsius, double temp2InCelsius)
+    public void updateUnits(TextView day, double temp1InCelsius, String date)
     {
-        day1 = getView().findViewById(R.id.day1);
-        day2 = getView().findViewById(R.id.day2);
+
         DecimalFormat df = new DecimalFormat("#.#");
 
         SharedPreferences prefs = getActivity().getSharedPreferences("PREFS", getActivity().MODE_PRIVATE);
         int option = prefs.getInt("option", 0);
         if (option == 0){
-            day1.setText(getResources().getString(R.string.tomorrow)+": " + String.valueOf(df.format(temp1InCelsius)) + " \u2103");
-            day2.setText(getResources().getString(R.string.day_after)+": " + String.valueOf(df.format(temp2InCelsius)) + " \u2103");
-
+            day.setText(date+": " + String.valueOf(df.format(temp1InCelsius)) + " \u2103");
         }
         else if (option == 1){
             double temp1InKelvin = temp1InCelsius + 273.15;
-            double temp2InKelvin = temp2InCelsius + 273.15;
-            day1.setText(getResources().getString(R.string.tomorrow)+": " + String.valueOf(df.format(temp1InKelvin)) + " K");
-            day2.setText(getResources().getString(R.string.day_after)+": " + String.valueOf(df.format(temp2InKelvin)) + " K");
-
+            day.setText(date+": " + String.valueOf(df.format(temp1InKelvin)) + " K");
         }
         else if (option == 2){
             double temp1InFahrenheit = 32 + (temp1InCelsius * 9 / 5);
-            double temp2InFahrenheit = 32 + (temp2InCelsius * 9 / 5);
-            Log.d("Test1", String.valueOf(temp2InFahrenheit));
-            day1.setText(getResources().getString(R.string.tomorrow)+": " + String.valueOf(df.format(temp1InFahrenheit)) + " F");
-            day2.setText(getResources().getString(R.string.day_after)+": " + String.valueOf(df.format(temp2InFahrenheit)) + " F");
-
+            day.setText(date+": " + String.valueOf(df.format(temp1InFahrenheit)) + " F");
         }
     }
 

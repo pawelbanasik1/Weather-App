@@ -44,7 +44,6 @@ public class CurrentWeatherFragment extends Fragment {
     protected TextView cloud;
 
 
-
     protected BroadcastReceiver bReceiver = new BroadcastReceiver(){
 
         @Override

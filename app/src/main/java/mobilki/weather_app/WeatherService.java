@@ -35,7 +35,7 @@ public class WeatherService extends Service {
         final String longtitude = (String) extras.get("longtitude");
         final String typeOfForecast = (String) extras.get("typeOfForecast");
         SharedPreferences prefs = context.getSharedPreferences("PREFS", context.MODE_PRIVATE);
-        final String localization = prefs.getString("localization", null);
+        final String localization = prefs.getString("localization", "");
 
 
 

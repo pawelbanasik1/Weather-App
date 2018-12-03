@@ -65,10 +65,10 @@ public class LongtermWeatherFragment extends Fragment {
                     double temp3celsius = temp3double - 273.15;
                     double temp4celsius = temp4double - 273.15;
 
-                    day1 = getView().findViewById(R.id.day1);
-                    day2 = getView().findViewById(R.id.day2);
-                    day3 = getView().findViewById(R.id.day3);
-                    day4 = getView().findViewById(R.id.day4);
+                    day4 = getView().findViewById(R.id.day1);
+                    day3 = getView().findViewById(R.id.day2);
+                    day2 = getView().findViewById(R.id.day3);
+                    day1 = getView().findViewById(R.id.day4);
 
                     updateUnits(day1,temp1celsius, date1);
                     updateUnits(day2,temp2celsius, date2);

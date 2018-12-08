@@ -32,6 +32,7 @@ public class LongtermWeatherFragment extends Fragment {
     protected TextView day2;
     protected TextView day3;
     protected TextView day4;
+    protected TextView day5;
 
 
     protected BroadcastReceiver bReceiver = new BroadcastReceiver(){
@@ -48,32 +49,38 @@ public class LongtermWeatherFragment extends Fragment {
                     String temperature2 = obj.getJSONArray("list").getJSONObject(8).getJSONObject("main").getString("temp");
                     String temperature3 = obj.getJSONArray("list").getJSONObject(12).getJSONObject("main").getString("temp");
                     String temperature4 = obj.getJSONArray("list").getJSONObject(16).getJSONObject("main").getString("temp");
+                    String temperature5 = obj.getJSONArray("list").getJSONObject(20).getJSONObject("main").getString("temp");
 
                     String date1 = obj.getJSONArray("list").getJSONObject(4).getString("dt_txt");
                     String date2 = obj.getJSONArray("list").getJSONObject(8).getString("dt_txt");
                     String date3 = obj.getJSONArray("list").getJSONObject(12).getString("dt_txt");
                     String date4 = obj.getJSONArray("list").getJSONObject(16).getString("dt_txt");
+                    String date5 = obj.getJSONArray("list").getJSONObject(20).getString("dt_txt");
 
                     //oryginalny output jest w kelvinach wiec zamieniam na celsjusze
                     double temp1double = Double.parseDouble(temperature1);
                     double temp2double = Double.parseDouble(temperature2);
                     double temp3double = Double.parseDouble(temperature3);
                     double temp4double = Double.parseDouble(temperature4);
+                    double temp5double = Double.parseDouble(temperature5);
 
                     double temp1celsius = temp1double - 273.15;
                     double temp2celsius = temp2double - 273.15;
                     double temp3celsius = temp3double - 273.15;
                     double temp4celsius = temp4double - 273.15;
+                    double temp5celsius = temp5double - 273.15;
 
                     day1 = getView().findViewById(R.id.day1);
                     day2 = getView().findViewById(R.id.day2);
                     day3 = getView().findViewById(R.id.day3);
                     day4 = getView().findViewById(R.id.day4);
+                    day5 = getView().findViewById(R.id.day5);
 
                     updateUnits(day1,temp1celsius, date1);
                     updateUnits(day2,temp2celsius, date2);
                     updateUnits(day3,temp3celsius, date3);
                     updateUnits(day4,temp4celsius, date4);
+                    updateUnits(day5,temp5celsius, date5);
 
 
                 } catch (JSONException e) {

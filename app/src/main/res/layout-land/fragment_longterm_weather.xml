@@ -4,14 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CurrentWeatherFragment"
+    tools:context=".LongtermWeatherFragment"
     tools:showIn="@layout/app_bar_main">
 
-
-
     <TextView
-        android:id="@+id/temp2"
-        android:layout_width="216dp"
+        android:id="@+id/day5"
+        android:layout_width="wrap_content"
         android:layout_height="55dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -23,11 +21,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.681" />
+        app:layout_constraintVertical_bias="0.95" />
 
     <TextView
-        android:id="@+id/day2"
-        android:layout_width="216dp"
+        android:id="@+id/day4"
+        android:layout_width="wrap_content"
         android:layout_height="55dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -39,11 +37,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.47" />
+        app:layout_constraintVertical_bias="0.75" />
+
+    <TextView
+        android:id="@+id/day3"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.55" />
 
     <TextView
         android:id="@+id/day1"
-        android:layout_width="216dp"
+        android:layout_width="wrap_content"
         android:layout_height="68dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -51,15 +65,15 @@
         android:layout_marginBottom="8dp"
         android:gravity="center"
         android:textSize="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/temp"
+        app:layout_constraintBottom_toTopOf="@+id/day2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.097" />
+        app:layout_constraintVertical_bias="0.6" />
 
     <TextView
-        android:id="@+id/temp1"
-        android:layout_width="216dp"
+        android:id="@+id/day2"
+        android:layout_width="wrap_content"
         android:layout_height="52dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -67,10 +81,10 @@
         android:layout_marginBottom="8dp"
         android:gravity="center"
         android:textSize="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/humidity"
+        app:layout_constraintBottom_toTopOf="@+id/day3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.78" />
+        app:layout_constraintVertical_bias="0.9" />
 
 </android.support.constraint.ConstraintLayout>

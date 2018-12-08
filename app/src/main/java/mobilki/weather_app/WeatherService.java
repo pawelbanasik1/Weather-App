@@ -25,13 +25,15 @@ import okhttp3.Response;
 
 public class WeatherService extends Service {
 
+
     public Context context = this;
-    private Long Id;
+   // private Long Id;
     private static MainActivity parent;
 
     public WeatherService(MainActivity parent) {
         this.parent = parent;
     }
+
 
     public WeatherService() {
     }
@@ -54,6 +56,10 @@ public class WeatherService extends Service {
         final String typeOfForecast = (String) extras.get("typeOfForecast");
         SharedPreferences prefs = context.getSharedPreferences("PREFS", context.MODE_PRIVATE);
         final String localization = prefs.getString("localization", "");
+
+        final SharedPreferences prefs1 = context.getSharedPreferences("Pref_Id", context.MODE_PRIVATE);
+        final Long Id = prefs1.getLong("Id", -1L);
+
 
 
 
@@ -100,7 +106,7 @@ public class WeatherService extends Service {
                         weather.setPres(pressure);
                         weather.setTemp(temperature);
                         db.saveCurrent(weather);
-                        Id = weather.getId();
+                        prefs1.edit().putLong("Id", weather.getId()).apply();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -108,7 +114,10 @@ public class WeatherService extends Service {
                 }
                 catch(IOException e) {
                     CurrentWeather weather1 = new CurrentWeather();
-                    if(Id == null){
+
+
+
+                    if(Id == -1L){
                         Handler h = new Handler(context.getMainLooper());
                         h.post(new Runnable() {
                             @Override
@@ -127,7 +136,6 @@ public class WeatherService extends Service {
                                 Toast.makeText(context,R.string.toast_filled_db,Toast.LENGTH_LONG).show();
                             }
                            });
-                        //"main":{"temp":285.514,"pressure":1013.75,"humidity":100,"temp_min":285.514,"temp_max":285.514,"sea_level":1023.22,"grnd_level":1013.75}
                         String output = "{ \"name\":\"" + weather1.getCity() + "\",\"main\":{\"temp\":\"" + weather1.getTemp() + "\", \"humidity\": \"" + weather1.getHum() + "\", " +
                                 "\"pressure\": \"" + weather1.getPres() + "\"}, \"clouds\":{\"all\": \"" + weather1.getCloud() + "\"}}";
                         Intent intent = new Intent("weatherdata");

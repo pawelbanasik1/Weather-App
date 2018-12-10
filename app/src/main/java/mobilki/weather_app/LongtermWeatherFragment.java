@@ -7,9 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +21,15 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 
 import mobilki.weather_app.Database.CurrentWeather;
+import mobilki.weather_app.Database.DataManagerImp;
+import mobilki.weather_app.Database.LongTerm;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class LongtermWeatherFragment extends Fragment {
-
 
     protected TextView day1;
     protected TextView day2;
@@ -38,16 +41,32 @@ public class LongtermWeatherFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            SharedPreferences.Editor editor = context.getSharedPreferences("PREFS_1", MODE_PRIVATE).edit();
             Bundle extras = intent.getExtras();
             final String data = (String) extras.get("output");
             final String typeOfForecast = (String) extras.get("typeOfForecast");
             if (typeOfForecast.equals("forecast")) {
                 try {
                     JSONObject obj = new JSONObject(data);
+                    if(obj.toString().length()<1000){
+                        SharedPreferences prefs = context.getSharedPreferences("PREFS_1", MODE_PRIVATE);
+                        String data1 = prefs.getString("Json", null);
+                        obj = new JSONObject(data1);
+                    }
+                    else{
+                        String yourString =  obj.toString();
+                        editor.putString("Json",yourString  );
+                        editor.commit();
+
+                    }
+
                     String temperature1 = obj.getJSONArray("list").getJSONObject(4).getJSONObject("main").getString("temp");
+
+
                     String temperature2 = obj.getJSONArray("list").getJSONObject(8).getJSONObject("main").getString("temp");
                     String temperature3 = obj.getJSONArray("list").getJSONObject(12).getJSONObject("main").getString("temp");
                     String temperature4 = obj.getJSONArray("list").getJSONObject(16).getJSONObject("main").getString("temp");
+
 
                     String date1 = obj.getJSONArray("list").getJSONObject(4).getString("dt_txt");
                     String date2 = obj.getJSONArray("list").getJSONObject(8).getString("dt_txt");
